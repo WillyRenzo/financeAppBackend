@@ -23,7 +23,7 @@ model User {
   updatedAt     DateTime  @updatedAt @map("dt_update") @db.Timestamp(6)
   updateUser    String?   @map("update_user_id") @db.Uuid
   inactivatedAt DateTime? @map("dt_inactivated") @db.Timestamp(6)
-  Account       Account[] @relation("accountsToUsers_userId")
+  account       Account[] @relation("accountsToUsers_userId")
 
   @@map("users")
 }

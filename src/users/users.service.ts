@@ -1,38 +1,40 @@
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "src/database/repositories/UserRepository.service";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { CreateUserDto } from "./dto/CreateUser.dto";
+import { UpdateUserDto } from "./dto/UpdateUser.dto";
+import { User } from "./dto/User.dto";
 
 @Injectable()
 export class UsersService {
   constructor(private readonly userService: UserRepository) {}
 
-  create(createUserDto: CreateUserDto) {
-    const createdUser = this.userService.createUser(createUserDto);
+  async create(data: CreateUserDto): Promise<User> {
+    const createdUser = await this.userService.createUser(data);
 
-    return {
-      data: createdUser,
-      message: "This action adds a new user",
-    };
+    return createdUser;
   }
 
-  findAll() {
-    const users = this.userService.users({});
-    return {
-      data: users,
-      message: `This action returns all users`,
-    };
+  async findAll(): Promise<User[]> {
+    const users = await this.userService.users({});
+
+    return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<User> {
+    const user = await this.userService.user({ id });
+
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, data: UpdateUserDto): Promise<User> {
+    const updatedUser = await this.userService.updateUser({ where: { id }, data });
+
+    return updatedUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<User> {
+    const removedUser = await this.userService.deleteUser({ id });
+
+    return removedUser;
   }
 }
