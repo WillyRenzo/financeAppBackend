@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { AccountRepository } from "src/database/repositories/AccountRepository.service";
-import { UserRepository } from "src/database/repositories/UserRepository.service";
+import { AccountRepository } from "../database/repositories/AccountRepository.service";
+import { UserRepository } from "../database/repositories/UserRepository.service";
 import { Account } from "./dto/Account.dto";
 import { CreateAccountDto } from "./dto/CreateAccount.dto";
 import { UpdateAccountDto } from "./dto/UpdateAccount.dto";

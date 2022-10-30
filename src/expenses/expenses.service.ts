@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ExpenseRepository } from "src/database/repositories/ExpenseRepository.service";
+import { ExpenseRepository } from "../database/repositories/ExpenseRepository.service";
 import { CreateExpenseDto } from "./dto/CreateExpense.dto";
 import { Expense } from "./dto/Expense.dto";
 import { UpdateExpenseDto } from "./dto/UpdateExpense.dto";

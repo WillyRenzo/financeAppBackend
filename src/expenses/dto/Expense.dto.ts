@@ -1,7 +1,7 @@
 export class Expense {
   id: string;
   description: string;
-  type: string;
+  typeId: string;
   accountId: string;
   isRevenue: boolean;
   isExpense: boolean;

@@ -1,25 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsUUID, IsBoolean } from "class-validator";
+import { IsString, IsUUID, IsBoolean, isUUID } from "class-validator";
 
 export class CreateExpenseDto {
-  @ApiProperty()
+  @ApiProperty({ description: "Descrição da despesa" })
   @IsString()
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: "Valor da despesa" })
   @IsString()
-  type: string;
+  value: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: "Tipo da cobrança" })
+  @IsUUID()
+  typeId: string;
+
+  @ApiProperty({ description: "Conta vinculada a cobrança" })
   @IsUUID()
   accountId: string;
   account: any;
 
-  @ApiProperty()
+  @ApiProperty({ description: "É uma receita?" })
   @IsBoolean()
   isRevenue: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ description: "É um débito?" })
   @IsBoolean()
   isExpense: boolean;
 }

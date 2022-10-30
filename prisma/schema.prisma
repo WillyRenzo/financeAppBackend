@@ -11,19 +11,23 @@ datasource db {
 }
 
 model User {
-  id            String    @id(map: "pk_users_id") @default(uuid()) @db.Uuid
-  name          String    @map("vc_name") @db.VarChar
-  lastName      String    @map("vc_last_name") @db.VarChar
-  password      String    @map("vc_password") @db.VarChar
-  avatar        String    @map("vc_avatar") @db.VarChar
-  phone         String?   @map("vc_phone") @db.VarChar
-  email         String    @map("vc_email") @db.VarChar
-  createdAt     DateTime  @default(now()) @map("dt_create") @db.Timestamp(6)
-  creationUser  String?   @map("create_user_id") @db.Uuid
-  updatedAt     DateTime  @updatedAt @map("dt_update") @db.Timestamp(6)
-  updateUser    String?   @map("update_user_id") @db.Uuid
-  inactivatedAt DateTime? @map("dt_inactivated") @db.Timestamp(6)
-  account       Account[] @relation("accountsToUsers_userId")
+  id                         String          @id(map: "pk_users_id") @default(uuid()) @db.Uuid
+  name                       String          @map("vc_name") @db.VarChar
+  lastName                   String          @map("vc_last_name") @db.VarChar
+  password                   String          @map("vc_password") @db.VarChar
+  avatar                     String          @map("vc_avatar") @db.VarChar
+  phone                      String?         @map("vc_phone") @db.VarChar
+  email                      String          @map("vc_email") @db.VarChar
+  createdAt                  DateTime        @default(now()) @map("dt_create") @db.Timestamp(6)
+  creationUser               String?         @map("create_user_id") @db.Uuid
+  updatedAt                  DateTime        @updatedAt @map("dt_update") @db.Timestamp(6)
+  updateUser                 String?         @map("update_user_id") @db.Uuid
+  inactivatedAt              DateTime?       @map("dt_inactivated") @db.Timestamp(6)
+  account                    Account[]       @relation("accountsToUsers_userId")
+  category_update_user       Category[]      @relation("categories_update_user_idTousers")
+  category_create_user       Category[]      @relation("categories_create_user_idTousers")
+  category_items_create_user CategoryItems[] @relation("category_items_create_user_idTousers")
+  category_items_update_user CategoryItems[] @relation("category_items_update_user_idTousers")
 
   @@map("users")
 }
@@ -46,9 +50,13 @@ model Account {
 }
 
 model Expense {
-  id           String   @id(map: "pk_expenses_id") @default(uuid()) @db.Uuid
-  description  String   @map("vc_description") @db.VarChar
-  type         String   @map("vc_type") @db.VarChar
+  id          String @id(map: "pk_expenses_id") @default(uuid()) @db.Uuid
+  description String @map("vc_description") @db.VarChar
+  value       String @map("vc_value") @db.VarChar
+
+  typeId String?       @map("vc_type") @db.Uuid
+  type   CategoryItems? @relation("expensesToCategoryItems_typeId", fields: [typeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_expenses_type_id")
+
   createdAt    DateTime @default(now()) @map("dt_create") @db.Timestamp(6)
   creationUser String?  @map("create_user_id") @db.Uuid
 
@@ -59,4 +67,40 @@ model Expense {
   isExpense Boolean @map("bl_is_expense") @db.Boolean
 
   @@map("expenses")
+}
+
+model Category {
+  id                                     String          @id(map: "pk_categories") @default(uuid()) @db.Uuid
+  name                                   String          @map("vc_name") @db.VarChar
+  type                                   String          @unique @map("vc_type") @db.VarChar
+  value                                  String?         @map("vc_value") @db.VarChar
+  createdAt                              DateTime        @default(now()) @map("dt_create") @db.Timestamp(6)
+  creationUser                           String          @map("create_user_id") @db.Uuid
+  updatedAt                              DateTime        @updatedAt @map("dt_update") @db.Timestamp(6)
+  updateUser                             String          @map("update_user_id") @db.Uuid
+  inactivatedAt                          DateTime?       @map("dt_inactivated") @db.Timestamp(6)
+  users_categories_update_user_idTousers User            @relation("categories_update_user_idTousers", fields: [updateUser], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categories_update_user")
+  users_categories_create_user_idTousers User            @relation("categories_create_user_idTousers", fields: [creationUser], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categories_create_user")
+  category_items                         CategoryItems[]
+
+  @@map("categories")
+}
+
+model CategoryItems {
+  id                                   String    @id(map: "pk_category_items") @default(uuid()) @db.Uuid
+  name                                 String    @map("vc_name") @db.VarChar
+  type                                 String    @unique @map("vc_type") @db.VarChar
+  value                                String?   @map("vc_value") @db.VarChar
+  categoryId                           String    @map("category_id") @db.Uuid
+  createdAt                            DateTime  @default(now()) @map("dt_create") @db.Timestamp(6)
+  creationUser                         String    @map("create_user_id") @db.Uuid
+  updatedAt                            DateTime  @updatedAt @map("dt_update") @db.Timestamp(6)
+  updateUser                           String    @map("update_user_id") @db.Uuid
+  inactivatedAt                        DateTime? @map("dt_inactivated") @db.Timestamp(6)
+  categories                           Category  @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_items_category")
+  category_items_create_user_idTousers User      @relation("category_items_create_user_idTousers", fields: [creationUser], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_items_create_user")
+  category_items_update_user_idTousers User      @relation("category_items_update_user_idTousers", fields: [updateUser], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_items_update_user")
+  expenses                             Expense[] @relation("expensesToCategoryItems_typeId")
+
+  @@map("category_items")
 }
