@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { hash } from "bcrypt";
 import { UserRepository } from "../database/repositories/UserRepository.service";
 import { CreateUserDto } from "./dto/CreateUser.dto";
 import { UpdateUserDto } from "./dto/UpdateUser.dto";
@@ -9,7 +10,11 @@ export class UsersService {
   constructor(private readonly userService: UserRepository) {}
 
   async create(data: CreateUserDto): Promise<User> {
-    const createdUser = await this.userService.createUser(data);
+    const hashedPassword = await hash(data.password, 10);
+
+    const newData = { ...data, password: hashedPassword };
+
+    const createdUser = await this.userService.createUser(newData);
 
     return createdUser;
   }

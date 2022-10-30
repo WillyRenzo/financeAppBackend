@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { AccountRepository } from "../database/repositories/AccountRepository.service";
 import { UserRepository } from "../database/repositories/UserRepository.service";
 import { Account } from "./dto/Account.dto";
@@ -12,12 +12,22 @@ export class AccountsService {
   async create(data: CreateAccountDto): Promise<Account> {
     const user = await this.userRepository.user({ id: data.userId });
 
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
     const createdAccount = await this.accountRepository.createAccount(data);
 
     return createdAccount;
   }
 
-  async findAll(): Promise<Account[]> {
+  async findAll(session: any): Promise<Account[]> {
+    const { userId, username } = session;
+
+    const userRelated = await this.userRepository.findOne({ id: userId, email: username });
+
+    console.log(userRelated);
+
     const accounts = await this.accountRepository.accounts({});
 
     return accounts;

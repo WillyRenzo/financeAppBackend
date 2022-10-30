@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/CreateUser.dto";
 import { UpdateUserDto } from "./dto/UpdateUser.dto";
@@ -15,7 +15,7 @@ export class UsersController {
   @Post("create")
   @ApiCreatedResponse({ description: "User has been successfully created.", type: User })
   @ApiBadRequestResponse({ description: "Cannot create the user." })
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Req() req, @Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 

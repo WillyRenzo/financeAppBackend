@@ -26,4 +26,7 @@ export class CreateExpenseDto {
   @ApiProperty({ description: "É um débito?" })
   @IsBoolean()
   isExpense: boolean;
+
+  creationUser: any;
+  updateUser: any;
 }

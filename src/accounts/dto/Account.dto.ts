@@ -3,5 +3,7 @@ export class Account {
   balance: string;
   createdAt: Date;
   updatedAt: Date;
+  creationUser: any;
+  updateUser: any;
   userId: string;
 }

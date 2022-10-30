@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from "@nestjs/common";
 import { ExpensesService } from "./expenses.service";
 import { CreateExpenseDto } from "./dto/CreateExpense.dto";
 import { UpdateExpenseDto } from "./dto/UpdateExpense.dto";
@@ -12,7 +12,11 @@ export class ExpensesController {
 
   @UseGuards(JwtAuthGuard)
   @Post("create")
-  create(@Body() createExpenseDto: CreateExpenseDto) {
+  create(@Req() req, @Body() createExpenseDto: CreateExpenseDto) {
+    const session = req.user;
+
+    createExpenseDto.creationUser = session.userId;
+
     return this.expensesService.create(createExpenseDto);
   }
 
@@ -30,7 +34,11 @@ export class ExpensesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch("update/:id")
-  update(@Param("id") id: string, @Body() updateExpenseDto: UpdateExpenseDto) {
+  update(@Req() req, @Param("id") id: string, @Body() updateExpenseDto: UpdateExpenseDto) {
+    const session = req.user;
+
+    updateExpenseDto.updateUser = session.userId;
+
     return this.expensesService.update(id, updateExpenseDto);
   }
 

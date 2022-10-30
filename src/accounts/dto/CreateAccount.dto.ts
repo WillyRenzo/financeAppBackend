@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsUUID } from "class-validator";
+import { User } from "src/users/dto/User.dto";
 
 export class CreateAccountDto {
   @ApiProperty({ description: "Balanço da conta" })
@@ -10,4 +11,7 @@ export class CreateAccountDto {
   @IsUUID()
   userId: string;
   user: any;
+
+  creationUser: any;
+  updateUser: any;
 }
